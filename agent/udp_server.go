@@ -19,6 +19,7 @@ func StartUDPServer(address string, port int) chan *MetricData {
 
     metricDataChannel := make(chan *MetricData)
 
+    W.Add(1)
     go listenForMetrics(sock, metricDataChannel)
 
     return metricDataChannel
@@ -33,9 +34,20 @@ func listenForMetrics(sock *net.UDPConn, metricDataChannel chan *MetricData) {
         err := json.Unmarshal(bytes[:dataLen], monitorData)
 
         if err != nil {
+            closeProcedure := string(bytes[:dataLen])
+            if strings.Trim(closeProcedure, "!\n") == "close" {
+                L.Info("Shutdown command received! Close metric data channel immediately");
+                close(metricDataChannel)
+                break
+            }
+
             L.Err("Unable to unpack monitor information");
         } else {
             metricDataChannel <- monitorData
         }
     }
+
+    L.Info("I'm ready to close the UDP monitor socket")
+    sock.Close()
+    W.Done()
 }

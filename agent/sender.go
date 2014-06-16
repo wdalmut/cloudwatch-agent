@@ -23,7 +23,7 @@ func init() {
         panic("Unable to send data to CloudWatch")
     }
 
-    cw,_ = cloudwatch.NewCloudWatch(auth, region.CloudWatchServicepoint)
+        cw,_ = cloudwatch.NewCloudWatch(auth, region.CloudWatchServicepoint)
 }
 
 func SendCollectedData() {
@@ -33,8 +33,6 @@ func SendCollectedData() {
         for key, point := range Database.metrics {
             metric := new(cloudwatch.MetricDatum)
 
-            L.Info(fmt.Sprintf("letto %v", point))
-
             metric.MetricName = point.Metric
             metric.Timestamp = time
             metric.Unit = ""
@@ -42,11 +40,10 @@ func SendCollectedData() {
 
             metrics := []cloudwatch.MetricDatum{*metric}
 
-            L.Info(fmt.Sprintf("%v", metric))
             if _, err := cw.PutMetricDataNamespace(metrics, point.Namespace); err != nil {
-                L.Err(fmt.Sprintf("%", err))
+                L.Err(fmt.Sprintf("%v", err))
             } else {
-                L.Info("Data sent to cloud")
+                L.Info("Metric with key: \"" + key + "\" sent to cloud correcly")
             }
 
 
@@ -58,8 +55,8 @@ func SendCollectedData() {
 
 func doEvery(d time.Duration, f func(time.Time)) {
     for {
-        L.Info("issue")
         time.Sleep(d)
         f(time.Now())
     }
 }
+

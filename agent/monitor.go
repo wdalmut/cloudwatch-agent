@@ -29,7 +29,12 @@ func init() {
 
 func CollectData(metricPipe chan *MetricData) {
     for {
-        data := <-metricPipe
+        data, ok := <-metricPipe
+        if !ok {
+            L.Info("The metric data pipeline is closed!")
+            break
+        }
+
         key := data.Namespace + ":" + data.Metric
 
         L.Info(key)
@@ -51,4 +56,7 @@ func CollectData(metricPipe chan *MetricData) {
 
         Database.Unlock()
     }
+
+    L.Info("I'm ready to close the metric data collection")
+    W.Done()
 }
