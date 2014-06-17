@@ -18,12 +18,12 @@ func init() {
     auth, err := aws.EnvAuth()
 
     if err != nil {
-        L.Err(fmt.Sprintf("Unable to send data to CloudWatch %v", err))
+        L.Err(fmt.Sprintf("Unable to send data to CloudWatch: %v", err))
 
-        panic(fmt.Sprintf("Unable to send data to CloudWatch %v", err))
+        panic(fmt.Sprintf("Unable to send data to CloudWatch: %v", err))
     }
 
-        cw,_ = cloudwatch.NewCloudWatch(auth, region.CloudWatchServicepoint)
+    cw,_ = cloudwatch.NewCloudWatch(auth, region.CloudWatchServicepoint)
 }
 
 func SendCollectedData() {
