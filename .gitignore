@@ -1,0 +1,3 @@
+cloudwatch-agent
+*.rpm
+.vagrant
