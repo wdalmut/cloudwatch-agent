@@ -3,7 +3,7 @@
 #
 Summary: A CloudWatch long running daemon
 Name: cloudwatch-agent
-Version: 0.0.1
+Version: 0.0.2
 Release: 1
 License: MIT
 Group: System Environment/Daemons
@@ -21,22 +21,28 @@ The daemon collects all metrics through UDP/IP socket
 and send data collected periodically to AWS CloudWatch
 
 %prep
-wget -O %{name}.tar.gz https://github.com/wdalmut/cloudwatch-agent/archive/%{version}.tar.gz
+wget -O %{_sourcedir}/%{name}.tar.gz https://github.com/wdalmut/cloudwatch-agent/archive/%{version}.tar.gz
 rm -rf %{_builddir}/%{name}
 mkdir -p %{_builddir}/%{name}
 zcat %{_sourcedir}/%{name}.tar.gz | tar -xvf -
 
 %build
+mv %{name}-%{version}/* %{name}/
 cd %{name}
 go build
 
 %install
 mkdir -p %{buildroot}%{_sbindir}
+mkdir -p %{buildroot}%{_initrddir}
 cp %{name}/%{name} %{buildroot}%{_sbindir}/
+cp %{name}/rpm/cw-agent %{buildroot}%{_initrddir}/
+chmod a+x %{buildroot}/%{_initrddir}/cw-agent
 
 %files
 %doc %{name}/README.md
 %{_sbindir}/*
+%{_initrddir}/*
+
 
 %clean
 rm -rf %{buildroot}

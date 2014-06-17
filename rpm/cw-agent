@@ -1,0 +1,29 @@
+#!/bin/bash
+# chkconfig: 2345 20 80
+# description: CloudWatch Agent service script
+
+start() {
+    /usr/sbin/cloudwatch-agent
+}
+
+stop() {
+    killall cloudwatch-agent
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    retart)
+        stop
+        start
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart}"
+esac
+
+exit 0
+
