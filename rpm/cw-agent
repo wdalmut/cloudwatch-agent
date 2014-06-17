@@ -2,8 +2,18 @@
 # chkconfig: 2345 20 80
 # description: CloudWatch Agent service script
 
+[ -f /etc/default/cloudwatch-agent ] && . /etc/default/cloudwatch-agent
+
+if [ -z "$AWS_ACCESS_KEY_ID" ] ; then
+    echo "AWS_ACCESS_KEY_ID is not set, please set it /etc/default/cloudwatch-agent" >&2
+fi
+
+if [ -z "$AWS_SECRET_ACCESS_KEY" ] && [ -z "$AWS_SECRET_KEY" ] ; then
+    echo "AWS_SECRET_KEY or AWS_SECRET_ACCESS_KEY is missing, please set it /etc/default/cloudwatch-agent"
+fi
+
 start() {
-    /usr/sbin/cloudwatch-agent
+    nohup /usr/sbin/cloudwatch-agent > /dev/null 2>&1 &
 }
 
 stop() {
