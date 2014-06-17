@@ -3,8 +3,8 @@
 #
 Summary: A CloudWatch long running daemon
 Name: cloudwatch-agent
-Version: 0.0.3
-Release: 3
+Version: 0.0.4
+Release: 4
 License: MIT
 Group: System Environment/Daemons
 Source: %{name}.tar.gz
@@ -22,7 +22,8 @@ and send data collected periodically to AWS CloudWatch
 
 %prep
 wget -O %{_sourcedir}/%{name}.tar.gz https://github.com/wdalmut/cloudwatch-agent/archive/%{version}.tar.gz
-rm -rf %{_builddir}/%{name} mkdir -p %{_builddir}/%{name}
+rm -rf %{_builddir}/%{name}
+mkdir -p %{_builddir}/%{name}
 zcat %{_sourcedir}/%{name}.tar.gz | tar -xvf -
 
 %build
