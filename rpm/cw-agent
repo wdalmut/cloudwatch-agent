@@ -14,10 +14,18 @@ fi
 
 start() {
     nohup /usr/sbin/cloudwatch-agent > /dev/null 2>&1 &
+    echo $! > /var/run/cloudwatch-agent.pid
 }
 
 stop() {
-    killall cloudwatch-agent
+    kill -2 $(cat /var/run/cloudwatch-agent.pid)
+    rm -f /var/run/cloudwatch-agent.pid
+}
+
+status() {
+    if [ -e /var/run/cloudwatch-agent.pid ] ; then
+        echo "CloudWatch Agent seems up and running"
+    fi
 }
 
 case "$1" in
@@ -31,8 +39,11 @@ case "$1" in
         stop
         start
         ;;
+    status)
+        status
+        ;;
     *)
-        echo "Usage: $0 {start|stop|restart}"
+        echo "Usage: $0 {start|stop|restart|status}"
 esac
 
 exit 0
