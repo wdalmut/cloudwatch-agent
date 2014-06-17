@@ -3,8 +3,8 @@
 #
 Summary: A CloudWatch long running daemon
 Name: cloudwatch-agent
-Version: 0.0.3
-Release: 3
+Version: 0.0.4
+Release: 4
 License: MIT
 Group: System Environment/Daemons
 Source: %{name}.tar.gz
