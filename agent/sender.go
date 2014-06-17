@@ -8,7 +8,7 @@ import (
 )
 
 const (
-    SCHEDULED_LOOP = 6
+    SCHEDULED_LOOP = 60
 )
 
 var cw *cloudwatch.CloudWatch
