@@ -37,8 +37,6 @@ func CollectData(metricPipe chan *MetricData) {
 
         key := data.Namespace + ":" + data.Metric
 
-        L.Info(key)
-
         Database.Lock()
         actualPoint := Database.metrics[key]
         if (actualPoint == nil) {
