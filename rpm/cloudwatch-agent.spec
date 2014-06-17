@@ -22,8 +22,7 @@ and send data collected periodically to AWS CloudWatch
 
 %prep
 wget -O %{_sourcedir}/%{name}.tar.gz https://github.com/wdalmut/cloudwatch-agent/archive/%{version}.tar.gz
-rm -rf %{_builddir}/%{name}
-mkdir -p %{_builddir}/%{name}
+rm -rf %{_builddir}/%{name} mkdir -p %{_builddir}/%{name}
 zcat %{_sourcedir}/%{name}.tar.gz | tar -xvf -
 
 %build
@@ -42,7 +41,6 @@ chmod a+x %{buildroot}/%{_initrddir}/cw-agent
 %doc %{name}/README.md
 %{_sbindir}/*
 %{_initrddir}/*
-
 
 %clean
 rm -rf %{buildroot}
