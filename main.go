@@ -37,6 +37,7 @@ func waitingForKillSignal(c chan os.Signal) {
     addr, _ := net.ResolveUDPAddr("udp", strings.Join([]string{endpoint, strconv.Itoa(port)}, ":"))
     client,_ := net.DialUDP("udp", nil, addr)
     client.Write([]byte("close!\n"))
+    close(c)
 
     agent.W.Done()
 }
