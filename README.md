@@ -33,3 +33,33 @@ The data packet could include other features, like: units, etc...
 
 You can kill it or send via UDP the message `close!`
 
+## Install the agent
+
+
+### RPM Packages
+
+*Install RPM repo*
+
+```
+wget https://bintray.com/wdalmut/rpm/rpm -O bintray-wdalmut-rpm.repo
+sudo mv bintray-wdalmut-rpm.repo /etc/yum.repos.d/
+```
+
+*Install the agent*
+
+```
+sudo yum install cloudwatch-agent.x86_64
+```
+
+*Configure your CloudWatch keys*
+
+Edit file at: `/etc/default/cloudwatch-agent` and put your `KEY` and `SECRET`
+
+*Run the service*
+
+```
+sudo service cw-agent start
+```
+
+You can check: `start`, `stop`, `restart`, `status`
+
