@@ -68,8 +68,8 @@ You can check: `start`, `stop`, `restart`, `status`
 *Install DEB repo*
 
 ```
-echo "deb http://dl.bintray.com/wdalmut/deb /" | sudo tee /etc/apt/sources.list
-echo "deb-src http://dl.bintray.com/wdalmut/deb /" | sudo tee /etc/apt/sources.list
+echo "deb http://dl.bintray.com/wdalmut/deb /" | sudo tee /etc/apt/sources.list.d/wdalmut.list
+echo "deb-src http://dl.bintray.com/wdalmut/deb /" | sudo tee -a /etc/apt/sources.list.d/wdalmut.list
 ```
 
 *Update your packages*
