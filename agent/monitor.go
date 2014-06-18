@@ -38,25 +38,28 @@ func CollectData(metricPipe chan *MetricData) {
         key := data.Namespace + ":" + data.Metric
 
         Database.Lock()
-        actualPoint := Database.metrics[key]
-        if (actualPoint == nil) {
-            actualPoint = new(MetricData)
-
-            actualPoint.Metric = data.Metric
-            actualPoint.Namespace = data.Namespace
-
-            actualPoint.Value = data.Value
-            actualPoint.Unit = data.Unit
-
-            Database.metrics[key] = actualPoint
-        } else {
-            actualPoint.Update(data)
-        }
-
+        addPoint(key, data)
         Database.Unlock()
     }
 
     L.Info("I'm ready to close the metric data collection")
     W.Done()
+}
+
+func addPoint(key string, data *MetricData) {
+    actualPoint := Database.metrics[key]
+    if (actualPoint == nil) {
+        actualPoint = new(MetricData)
+
+        actualPoint.Metric = data.Metric
+        actualPoint.Namespace = data.Namespace
+
+        actualPoint.Value = data.Value
+        actualPoint.Unit = data.Unit
+
+        Database.metrics[key] = actualPoint
+    } else {
+        actualPoint.Update(data)
+    }
 }
 
