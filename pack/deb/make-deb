@@ -15,7 +15,8 @@ $control
     ->setInstalledSize(2048)
     ->setMaintainer("Walter Dal Mut", "walter.dalmut@corley.it")
     ->setProvides("cloudwatch-agent")
-    ->setDescription("Just a simple agent that send your statistics to AWS CloudWatch using an internal scheduler.");
+    ->setDescription("Just a simple agent that send your statistics to AWS CloudWatch using an internal scheduler.")
+    ->setArchitecture("amd64")
 ;
 
 $packager = new \wdm\debian\Packager();
