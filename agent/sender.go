@@ -35,7 +35,7 @@ func SendCollectedData() {
 
             metric.MetricName = point.Metric
             metric.Timestamp = time
-            metric.Unit = ""
+            metric.Unit = point.Unit
             metric.Value = point.Value
 
             metrics := []cloudwatch.MetricDatum{*metric}

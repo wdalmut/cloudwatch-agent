@@ -16,6 +16,19 @@ The data packet is just a simple JSON message
 {"namespace": "wdm", "metric": "indexer-timing", "value": 81.21}
 ```
 
+### Complete data packet structure
+
+The data packet could include other features, like: units, etc...
+
+```
+{
+    "namespace": ...
+    "metric": ...
+    "unit": ...
+    "value": ...
+}
+```
+
 ## Close the agent
 
 You can kill it or send via UDP the message `close!`

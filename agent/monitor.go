@@ -46,6 +46,7 @@ func CollectData(metricPipe chan *MetricData) {
             actualPoint.Namespace = data.Namespace
 
             actualPoint.Value = data.Value
+            actualPoint.Unit = data.Unit
 
             Database.metrics[key] = actualPoint
         } else {
@@ -58,3 +59,4 @@ func CollectData(metricPipe chan *MetricData) {
     L.Info("I'm ready to close the metric data collection")
     W.Done()
 }
+
