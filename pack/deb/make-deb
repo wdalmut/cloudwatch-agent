@@ -1,0 +1,34 @@
+#!/usr/bin/env php
+<?php
+require_once __DIR__ . '/vendor/autoload.php';
+
+if (!file_exists(__DIR__ . '/../../cloudwatch-agent')) {
+    echo "Please compile the source code: 'go build -a'" . PHP_EOL;
+    exit(1);
+}
+
+$control = new \wdm\debian\control\StandardFile();
+$control
+    ->setPackageName("cloudwatch-agent")
+    ->setVersion("0.0.6")
+    ->setDepends(array())
+    ->setInstalledSize(2048)
+    ->setMaintainer("Walter Dal Mut", "walter.dalmut@corley.it")
+    ->setProvides("cloudwatch-agent")
+    ->setDescription("Just a simple agent that send your statistics to AWS CloudWatch using an internal scheduler.");
+;
+
+$packager = new \wdm\debian\Packager();
+
+$packager->setOutputPath(__DIR__ . "/build");
+$packager->setControl($control);
+
+$packager->mount(__DIR__ . "/../scripts/cloudwatch-agent.default", "/etc/default/cloudwatch-agent");
+$packager->mount(__DIR__ . "/../scripts/cw-agent", "/etc/init.d/cw-agent");
+$packager->mount(__DIR__ . "/../../cloudwatch-agent", "/usr/sbin/cloudwatch-agent");
+
+//Creates folders using mount points
+$packager->run();
+
+//Creates the Debian package
+$packager->build();

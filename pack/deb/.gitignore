@@ -1,0 +1,4 @@
+build
+*.phar
+*.deb
+vendor

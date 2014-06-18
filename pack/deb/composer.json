@@ -1,0 +1,11 @@
+{
+    "require": {
+        "wdalmut/php-deb-packager": "*"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/wdalmut/php-deb-packager"
+        }
+    ]
+}

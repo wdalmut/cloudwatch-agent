@@ -1,3 +1,4 @@
 cloudwatch-agent
 *.rpm
 .vagrant
+*.phar
