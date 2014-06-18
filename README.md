@@ -63,3 +63,36 @@ sudo service cw-agent start
 
 You can check: `start`, `stop`, `restart`, `status`
 
+### DEB Packages
+
+*Install DEB repo*
+
+```
+echo "deb http://dl.bintray.com/wdalmut/deb /" | sudo tee /etc/apt/sources.list
+echo "deb-src http://dl.bintray.com/wdalmut/deb /" | sudo tee /etc/apt/sources.list
+```
+
+*Update your packages*
+
+```
+sudo apt-get update
+```
+
+*Install the agent*
+
+```
+sudo apt-get install cloudwatch-agent
+```
+
+*Configure your CloudWatch keys*
+
+Edit file at: `/etc/default/cloudwatch-agent` and put your `KEY` and `SECRET`
+
+*Run the service*
+
+```
+sudo service cw-agent start
+```
+
+You can check: `start`, `stop`, `restart`, `status`
+
