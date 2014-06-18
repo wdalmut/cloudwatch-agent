@@ -29,7 +29,6 @@ func init() {
 func SendCollectedData() {
     doEvery(SCHEDULED_LOOP * time.Second, func(time time.Time) {
         Database.Lock()
-
         for key, point := range Database.metrics {
             metric := new(cloudwatch.MetricDatum)
 

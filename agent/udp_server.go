@@ -36,7 +36,7 @@ func listenForMetrics(sock *net.UDPConn, metricDataChannel chan *MetricData) {
         if err != nil {
             closeProcedure := string(bytes[:dataLen])
             if strings.Trim(closeProcedure, "!\n") == "close" {
-                L.Info("Shutdown command received! Close metric data channel immediately");
+                L.Info("Shutdown command received! Close data channel communication pipeline immediately!");
                 close(metricDataChannel)
                 break
             }
@@ -47,7 +47,7 @@ func listenForMetrics(sock *net.UDPConn, metricDataChannel chan *MetricData) {
         }
     }
 
-    L.Info("I'm ready to close the UDP monitor socket")
+    L.Info("I close the UDP monitor daemon")
     sock.Close()
     W.Done()
 }

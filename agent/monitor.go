@@ -42,7 +42,7 @@ func CollectData(metricPipe chan *MetricData) {
         Database.Unlock()
     }
 
-    L.Info("I'm ready to close the metric data collection")
+    L.Info("I close the metric data collection daemon")
     W.Done()
 }
 
