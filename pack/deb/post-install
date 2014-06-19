@@ -1,0 +1,7 @@
+#!/bin/sh
+set -e
+
+chmod a+x /etc/init.d/cw-agent
+chmod a+x /usr/sbin/cloudwatch-agent
+
+exit 0

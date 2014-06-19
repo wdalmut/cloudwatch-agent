@@ -1,0 +1,74 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "e16690468dc5eb83c26a45633fc10d85",
+    "packages": [
+        {
+            "name": "wdalmut/php-deb-packager",
+            "version": "0.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/wdalmut/php-deb-packager.git",
+                "reference": "f05b914d417055bff6d637456019082eab20ea9e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/wdalmut/php-deb-packager/zipball/f05b914d417055bff6d637456019082eab20ea9e",
+                "reference": "f05b914d417055bff6d637456019082eab20ea9e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "wdm": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Walter Dal Mut",
+                    "email": "walter.dalmut@gmail.com",
+                    "homepage": "http://walterdalmut.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A simple debian packager for PHP applications",
+            "keywords": [
+                "deb",
+                "packager",
+                "php-deb",
+                "ubuntu"
+            ],
+            "support": {
+                "email": "walter.dalmut@gmail.com",
+                "source": "https://github.com/wdalmut/php-deb-packager/tree/0.0.3",
+                "issues": "https://github.com/wdalmut/php-deb-packager/issues"
+            },
+            "time": "2012-07-31 00:00:00"
+        }
+    ],
+    "packages-dev": [
+
+    ],
+    "aliases": [
+
+    ],
+    "minimum-stability": "stable",
+    "stability-flags": [
+
+    ],
+    "platform": [
+
+    ],
+    "platform-dev": [
+
+    ]
+}

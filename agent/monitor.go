@@ -2,6 +2,14 @@ package agent
 
 import (
     "sync"
+	"strings"
+)
+
+const (
+	OP_AVG = "avg"
+	OP_SUM = "sum"
+	OP_MAX = "max"
+	OP_MIN = "min"
 )
 
 type MetricData struct {
@@ -9,11 +17,7 @@ type MetricData struct {
     Metric string
     Unit string
     Value float64
-}
-
-func (h *MetricData)Update(point *MetricData) {
-    h.Value += point.Value
-    h.Value /= 2
+	Op string
 }
 
 type Samples struct {
@@ -22,9 +26,68 @@ type Samples struct {
 }
 
 var Database = new(Samples)
-
 func init() {
     Database.metrics = make(map[string]*MetricData)
+}
+
+func (h *MetricData)Key() string {
+	return h.Namespace + ":" + h.Metric
+}
+
+func (h *MetricData)Update(point *MetricData) {
+	switch h.Op {
+	default:
+		h.avg(point)
+	case OP_AVG:
+		h.avg(point)
+	case OP_MAX:
+		h.max(point)
+	case OP_MIN:
+		h.min(point)
+	case OP_SUM:
+		h.sum(point)
+	}
+}
+
+func (h *MetricData)max(point *MetricData) {
+	if point.Value > h.Value {
+		h.Value = point.Value
+	}
+}
+
+func (h *MetricData)min(point *MetricData) {
+	if point.Value < h.Value {
+		h.Value = point.Value
+	}
+}
+
+func (h *MetricData)sum(point *MetricData) {
+    h.Value += point.Value
+}
+
+func (h *MetricData)avg(point *MetricData) {
+    h.Value += point.Value
+    h.Value /= 2
+}
+
+func (h *Samples)addPoint(data *MetricData) {
+    actualPoint := h.metrics[data.Key()]
+
+    if (actualPoint == nil) {
+        actualPoint = new(MetricData)
+
+        actualPoint.Metric = data.Metric
+        actualPoint.Namespace = data.Namespace
+
+        actualPoint.Value = data.Value
+        actualPoint.Unit = data.Unit
+
+		actualPoint.Op = strings.ToLower(data.Op)
+
+        h.metrics[data.Key()] = actualPoint
+    } else {
+        actualPoint.Update(data)
+    }
 }
 
 func CollectData(metricPipe chan *MetricData) {
@@ -35,10 +98,9 @@ func CollectData(metricPipe chan *MetricData) {
             break
         }
 
-        key := data.Namespace + ":" + data.Metric
 
         Database.Lock()
-        addPoint(key, data)
+        Database.addPoint(data)
         Database.Unlock()
     }
 
@@ -46,20 +108,4 @@ func CollectData(metricPipe chan *MetricData) {
     W.Done()
 }
 
-func addPoint(key string, data *MetricData) {
-    actualPoint := Database.metrics[key]
-    if (actualPoint == nil) {
-        actualPoint = new(MetricData)
-
-        actualPoint.Metric = data.Metric
-        actualPoint.Namespace = data.Namespace
-
-        actualPoint.Value = data.Value
-        actualPoint.Unit = data.Unit
-
-        Database.metrics[key] = actualPoint
-    } else {
-        actualPoint.Update(data)
-    }
-}
 
