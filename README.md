@@ -26,8 +26,43 @@ The data packet could include other features, like: units, etc...
     "metric": ...
     "unit": ...
     "value": ...
+    "op": ...
 }
 ```
+
+Valid operations:
+  * `avg` - Compute the average (default)
+  * `sum` - Sum all samples
+  * `max` - Only the max sample
+  * `min` - Only the min sample
+
+Valid unit:
+  * `Seconds`
+  * `Microseconds`
+  * `Milliseconds`
+  * `Bytes`
+  * `Kilobytes`
+  * `Megabytes`
+  * `Gigabytes`
+  * `Terabytes`
+  * `Bits`
+  * `Kilobits`
+  * `Megabits`
+  * `Gigabits`
+  * `Terabits`
+  * `Percent`
+  * `Count`
+  * `Bytes/Second`
+  * `Kilobytes/Second`
+  * `Megabytes/Second`
+  * `Gigabytes/Second`
+  * `Terabytes/Second`
+  * `Bits/Second`
+  * `Kilobits/Second`
+  * `Megabits/Second`
+  * `Gigabits/Second`
+  * `Terabits/Second`
+  * `Count/Second`
 
 ## Close the agent
 
