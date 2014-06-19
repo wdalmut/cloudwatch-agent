@@ -14,12 +14,10 @@ fi
 
 start() {
     nohup /usr/sbin/cloudwatch-agent > /dev/null 2>&1 &
-    echo $! > /var/run/cloudwatch-agent.pid
 }
 
 stop() {
-    kill -2 $(cat /var/run/cloudwatch-agent.pid)
-    rm -f /var/run/cloudwatch-agent.pid
+    killall -2 cloudwatch-agent
 }
 
 status() {
