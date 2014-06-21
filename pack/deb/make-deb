@@ -26,6 +26,7 @@ $packager->setControl($control);
 
 $packager->mount(__DIR__ . "/../scripts/cloudwatch-agent.default", "/etc/default/cloudwatch-agent");
 $packager->mount(__DIR__ . "/../scripts/cw-agent", "/etc/init.d/cw-agent");
+$packager->mount(__DIR__ . "/../config/cloudwatch-agent.conf", "/etc/cloudwatch-agent/cloudwatch-agent.conf");
 $packager->mount(__DIR__ . "/../../cloudwatch-agent", "/usr/sbin/cloudwatch-agent");
 
 $packager->setPostInstallScript(__DIR__ . '/post-install');
