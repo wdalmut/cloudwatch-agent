@@ -13,21 +13,25 @@ const (
 
 var cw *cloudwatch.CloudWatch
 
-func init() {
-    region := aws.Regions["eu-west-1"]
-    auth, err := aws.EnvAuth()
+func initCloudWatchAgent(conf *AgentConf) {
+	auth, err := aws.GetAuth(conf.Key, conf.Secret, "",  time.Time{})
+	if err != nil {
+		L.Err(fmt.Sprintf("Unable to create the auth structure for CloudWatch: %v", err))
+        panic(fmt.Sprintf("Unable to create the auth structure for CloudWatch: %v", err))
+	}
 
-    if err != nil {
-        L.Err(fmt.Sprintf("Unable to send data to CloudWatch: %v", err))
-
-        panic(fmt.Sprintf("Unable to send data to CloudWatch: %v", err))
-    }
-
-    cw,_ = cloudwatch.NewCloudWatch(auth, region.CloudWatchServicepoint)
+    region := aws.Regions[conf.Region]
+	cw, err = cloudwatch.NewCloudWatch(auth, region.CloudWatchServicepoint)
+	if err != nil {
+		L.Err(fmt.Sprintf("Unable to login for send statistics: %v", err))
+        panic(fmt.Sprintf("Unable to login for send statistics: %v", err))
+	}
 }
 
-func SendCollectedData() {
-    doEvery(SCHEDULED_LOOP * time.Second, func(time time.Time) {
+func SendCollectedData(conf *AgentConf) {
+	initCloudWatchAgent(conf)
+
+    doEvery(time.Duration(conf.Loop) * time.Second, func(time time.Time) {
         Database.Lock()
         for key, point := range Database.metrics {
             metric := new(cloudwatch.MetricDatum)
