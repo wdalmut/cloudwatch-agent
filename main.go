@@ -11,12 +11,6 @@ import (
 	"fmt"
 )
 
-const (
-    endpoint = "127.0.0.1"
-    port = 1234
-)
-
-
 func main() {
 	var confPath string
 
@@ -29,7 +23,7 @@ func main() {
     c := make(chan os.Signal, 1)
     signal.Notify(c, os.Interrupt, os.Kill)
     agent.W.Add(1)
-    go waitingForKillSignal(c)
+    go waitingForKillSignal(c, conf)
 
     monitorChannel := agent.StartUDPServer(conf)
     agent.W.Add(1)
@@ -54,12 +48,12 @@ func mergeConfig(conf *agent.AgentConf, confPath string) {
 	}
 }
 
-func waitingForKillSignal(c chan os.Signal) {
+func waitingForKillSignal(c chan os.Signal, conf *agent.AgentConf) {
     _ = <-c
 
     agent.L.Info("Kill signal received!")
 
-    addr, _ := net.ResolveUDPAddr("udp", strings.Join([]string{endpoint, strconv.Itoa(port)}, ":"))
+    addr, _ := net.ResolveUDPAddr("udp", strings.Join([]string{conf.Address, strconv.Itoa(conf.Port)}, ":"))
     client,_ := net.DialUDP("udp", nil, addr)
     client.Write([]byte("close!\n"))
     close(c)
