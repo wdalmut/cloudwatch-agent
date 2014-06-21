@@ -134,3 +134,21 @@ sudo service cw-agent start
 
 You can check: `start`, `stop`, `restart`, `status`
 
+### Local configuration
+
+You can tweak your configuration updating the `/etc/cloudwatch-agent/cloudwatch-agent.conf` file
+
+A configuration example is:
+
+```json
+{
+    "region": "eu-west-1",
+    "address": "127.0.0.1",
+    "port": 1234,
+    "loop": 60
+}
+```
+
+You can also configure AWS credentials using: `key` and `secret` but: put
+your credentials into `/etc/default/cloudwatch-agent` is actually the preferrered configuration file
+
