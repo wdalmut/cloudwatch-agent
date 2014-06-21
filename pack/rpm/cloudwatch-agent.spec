@@ -3,7 +3,7 @@
 #
 Summary: A CloudWatch long running daemon
 Name: cloudwatch-agent
-Version: 0.0.8
+Version: 0.0.9
 Release: 1
 License: MIT
 Group: System Environment/Daemons
@@ -35,16 +35,19 @@ go build -a
 mkdir -p %{buildroot}%{_sbindir}
 mkdir -p %{buildroot}%{_initrddir}
 mkdir -p %{buildroot}%{_sysconfdir}/default
+mkdir -p %{buildroot}%{_sysconfdir}/%{name}
 cp %{name}/%{name} %{buildroot}%{_sbindir}/
 cp %{name}/pack/scripts/cw-agent %{buildroot}%{_initrddir}/
 chmod a+x %{buildroot}/%{_initrddir}/cw-agent
 cp %{name}/pack/scripts/%{name}.default %{buildroot}%{_sysconfdir}/default/%{name}
+cp %{name}/pack/config/%{name}.conf %{buildroot}%{_sysconfdir}/%{name}/%{name}.conf
 
 %files
 %doc %{name}/README.md
 %{_sbindir}/*
 %{_initrddir}/*
 %{_sysconfdir}/default/*
+%{_sysconfdir}/%{name}/*
 
 %clean
 rm -rf %{buildroot}

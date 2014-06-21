@@ -13,16 +13,36 @@ if [ -z "$AWS_SECRET_ACCESS_KEY" ] && [ -z "$AWS_SECRET_KEY" ] ; then
 fi
 
 start() {
-    nohup /usr/sbin/cloudwatch-agent > /dev/null 2>&1 &
+    nohup /usr/sbin/cloudwatch-agent -conf /etc/cloudwatch-agent/cloudwatch-agent.conf > /dev/null 2>&1 &
 }
 
 stop() {
     killall -2 cloudwatch-agent
 }
 
+check_process(){
+    if [ "$1" = "" ];
+    then
+            return 0
+    fi
+
+    PROCESS_NUM=$(ps -ef | grep "$1" | grep -v "grep" | wc -l)
+
+    if [ $PROCESS_NUM -eq 1 ]; then
+        return 1
+    else
+        return 0
+    fi
+}
+
 status() {
-    if [ -e /var/run/cloudwatch-agent.pid ] ; then
-        echo "CloudWatch Agent seems up and running"
+    check_process "cloudwatch-agent"
+    CHECK_RET=$?
+
+    if [ $CHECK_RET -eq 0 ]; then
+        echo " * cloudwatch-agent is stopped"
+    else
+        echo " * cloudwatch-agent is running"
     fi
 }
 

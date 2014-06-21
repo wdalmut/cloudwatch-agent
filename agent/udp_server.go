@@ -7,15 +7,15 @@ import (
     "encoding/json"
 )
 
-func StartUDPServer(address string, port int) chan *MetricData {
-    addr, _ := net.ResolveUDPAddr("udp", strings.Join([]string{address, strconv.Itoa(port)}, ":"))
+func StartUDPServer(conf *AgentConf) chan *MetricData {
+    addr, _ := net.ResolveUDPAddr("udp", strings.Join([]string{conf.Address, strconv.Itoa(conf.Port)}, ":"))
     sock, err := net.ListenUDP("udp", addr)
 
     if err != nil {
-        panic("Unable to start local agent at address" + address + ":" + strconv.Itoa(port))
+		panic("Unable to start local agent at address" + conf.Address + ":" + strconv.Itoa(conf.Port))
     }
 
-    L.Info("Started UDP monitor at " + address + ":" + strconv.Itoa(port));
+    L.Info("Started UDP monitor at " + conf.Address + ":" + strconv.Itoa(conf.Port));
 
     metricDataChannel := make(chan *MetricData)
 

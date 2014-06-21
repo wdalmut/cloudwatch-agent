@@ -8,6 +8,9 @@ AWS CloudWatch every minute.
 
 The agent listen for UDP packet on localhost on port 1234
 
+ * Master: [![Build Status](https://travis-ci.org/wdalmut/cloudwatch-agent.svg?branch=master)](https://travis-ci.org/wdalmut/cloudwatch-agent)
+ * Develop: [![Build Status](https://travis-ci.org/wdalmut/cloudwatch-agent.svg?branch=develop)](https://travis-ci.org/wdalmut/cloudwatch-agent)
+
 ## The data packet
 
 The data packet is just a simple JSON message
