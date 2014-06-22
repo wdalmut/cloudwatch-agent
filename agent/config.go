@@ -17,6 +17,13 @@ type AgentConf struct {
 	Loop    int
 }
 
+// Prepare a new agent configuration
+//
+// The default parameters are
+//  * REGION: eu-west-1
+// 	* ADDRESS: 127.0.0.1
+//  * PORT: 1234
+//  * LOOP: 60
 func NewConf() *AgentConf {
 	daemonConf := new(AgentConf)
 	daemonConf.Key = os.Getenv("AWS_ACCESS_KEY_ID")
@@ -34,6 +41,7 @@ func NewConf() *AgentConf {
 	return daemonConf
 }
 
+// Merge default configuration with a JSON configuration
 func (d *AgentConf) MergeWithFileAtPath(path string) error {
 	src, err := os.Open(path)
 	if err == nil {
@@ -49,6 +57,7 @@ func (d *AgentConf) MergeWithFileAtPath(path string) error {
 	return err
 }
 
+// Merge default configuration with a JSON configuration
 func (d *AgentConf) MergeWithReader(src io.Reader) error {
 	file, err := ioutil.ReadAll(src)
 	if err != nil {
