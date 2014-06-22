@@ -8,10 +8,9 @@ import (
 	"github.com/crowdmob/goamz/cloudwatch"
 )
 
-var cw *cloudwatch.CloudWatch
 var stopTicker chan struct{}
 
-func initCloudWatchAgent(conf *AgentConf) {
+func initCloudWatchAgent(conf *AgentConf) *cloudwatch.CloudWatch {
 	auth, err := aws.GetAuth(conf.Key, conf.Secret, "", time.Time{})
 	if err != nil {
 		L.Err(fmt.Sprintf("Unable to create the auth structure for CloudWatch: %v", err))
@@ -19,15 +18,17 @@ func initCloudWatchAgent(conf *AgentConf) {
 	}
 
 	region := aws.Regions[conf.Region]
-	cw, err = cloudwatch.NewCloudWatch(auth, region.CloudWatchServicepoint)
+	cw, err := cloudwatch.NewCloudWatch(auth, region.CloudWatchServicepoint)
 	if err != nil {
 		L.Err(fmt.Sprintf("Unable to login for send statistics: %v", err))
 		panic(fmt.Sprintf("Unable to login for send statistics: %v", err))
 	}
+
+	return cw
 }
 
 func sendCollectedData(conf *AgentConf, database *Samples) {
-	initCloudWatchAgent(conf)
+	cw := initCloudWatchAgent(conf)
 
 	stopTicker = make(chan struct{})
 	doEvery(time.Duration(conf.Loop)*time.Second, func(time time.Time) {
