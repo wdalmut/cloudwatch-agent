@@ -16,6 +16,8 @@ func Capture(conf *AgentConf) {
 	waitingForKillSignal(c, conf)
 	database := startUDPServer(conf)
 	sendCollectedData(conf, database)
+
+	L.Info("CloudWatch agent started...")
 }
 
 func startUDPServer(conf *AgentConf) *Samples {

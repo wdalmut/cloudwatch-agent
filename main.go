@@ -1,41 +1,53 @@
 package main
 
 import (
-    "os"
-    "flag"
-    "fmt"
-    "github.com/wdalmut/cloudwatch-agent/agent"
+	"fmt"
+	"os"
+
+	"github.com/codegangsta/cli"
+	"github.com/wdalmut/cloudwatch-agent/agent"
+)
+
+const (
+	VERSION = "0.0.9"
 )
 
 func main() {
-    var confPath string
+	app := cli.NewApp()
+	app.Name = "cloudwatch-agent"
+	app.Usage = "Monitor your application via UDP/IP messages"
+	app.Version = VERSION
+	app.Commands = []cli.Command{
+		{
+			Name:  "capture",
+			Usage: "Start capture messages on UDP/IP socket",
+			Action: func(c *cli.Context) {
+				conf := agent.NewConf()
+				completeConfig(conf, c.String("conf"))
 
-    flag.StringVar(&confPath, "conf", "", "Local configuration path")
-    flag.Parse()
+				agent.Capture(conf)
+			},
+			Flags: []cli.Flag{
+				cli.StringFlag{"conf, c", "", "Your local configuration path"},
+			},
+		},
+	}
 
-    conf := agent.NewConf()
-    completeConfig(conf, confPath)
-
-    agent.Capture(conf)
-
-    agent.L.Info("Waiting for the close signal")
-    agent.W.Wait()
+	app.Run(os.Args)
+	agent.W.Wait()
 }
 
 func completeConfig(conf *agent.AgentConf, confPath string) {
-    if confPath != "" {
-        src, err := os.Open(confPath)
-        if err == nil {
-            agent.L.Info(fmt.Sprintf("Merge default configuration with file at path: %s", confPath))
-            err = conf.MergeWithFile(src)
-            if err != nil {
-                agent.L.Warning(fmt.Sprintf("Unable to merge file %s, wrong JSON format probably", confPath))
-            }
-        } else {
-            agent.L.Warning(fmt.Sprintf("Missing file at path %s", confPath))
-        }
-    }
+	if confPath != "" {
+		src, err := os.Open(confPath)
+		if err == nil {
+			agent.L.Info(fmt.Sprintf("Merge default configuration with file at path: %s", confPath))
+			err = conf.MergeWithFile(src)
+			if err != nil {
+				agent.L.Warning(fmt.Sprintf("Unable to merge file %s, wrong JSON format probably", confPath))
+			}
+		} else {
+			agent.L.Warning(fmt.Sprintf("Missing file at path %s", confPath))
+		}
+	}
 }
-
-
-
