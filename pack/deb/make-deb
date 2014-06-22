@@ -10,7 +10,7 @@ if (!file_exists(__DIR__ . '/../../cloudwatch-agent')) {
 $control = new \wdm\debian\control\StandardFile();
 $control
     ->setPackageName("cloudwatch-agent")
-    ->setVersion("0.0.9")
+    ->setVersion("0.0.10")
     ->setDepends(array())
     ->setInstalledSize(2048)
     ->setMaintainer("Walter Dal Mut", "walter.dalmut@corley.it")
