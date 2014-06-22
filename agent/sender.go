@@ -25,13 +25,13 @@ func initCloudWatchAgent(conf *AgentConf) {
     }
 }
 
-func sendCollectedData(conf *AgentConf) {
+func sendCollectedData(conf *AgentConf, database *Samples) {
     initCloudWatchAgent(conf)
 
     stopTicker = make(chan struct{})
     doEvery(time.Duration(conf.Loop) * time.Second, func(time time.Time) {
-        Database.Lock()
-        for key, point := range Database.metrics {
+        database.Lock()
+        for key, point := range database.metrics {
             metric := new(cloudwatch.MetricDatum)
 
             metric.MetricName = point.Metric
@@ -48,9 +48,9 @@ func sendCollectedData(conf *AgentConf) {
             }
 
 
-            delete(Database.metrics, key)
+            delete(database.metrics, key)
         }
-        Database.Unlock()
+        database.Unlock()
     })
 }
 
@@ -59,18 +59,20 @@ func doEvery(every time.Duration, f func(time.Time)) {
 
     W.Add(1)
     go func() {
-        select {
-        case <- ticker.C:
-            f(time.Now())
-        case <- stopTicker:
-            ticker.Stop()
+        for {
+            select {
+            case <- ticker.C:
+                f(time.Now())
+            case <- stopTicker:
+                ticker.Stop()
 
-            L.Info("Received stop scheduler, force send operation to CloudWatch")
-            f(time.Now())
-            L.Info("All data sent to CloudWatch, closing data scheduler")
+                L.Info("Received stop scheduler, force send operation to CloudWatch")
+                f(time.Now())
+                L.Info("All data sent to CloudWatch, closing data scheduler")
 
-            W.Done()
-            return
+                W.Done()
+                return
+            }
         }
     }()
 }

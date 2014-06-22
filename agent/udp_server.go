@@ -14,11 +14,11 @@ func Capture(conf *AgentConf) {
     signal.Notify(c, os.Interrupt, os.Kill)
 
     waitingForKillSignal(c, conf)
-    startUDPServer(conf)
-    sendCollectedData(conf)
+	database := startUDPServer(conf)
+    sendCollectedData(conf, database)
 }
 
-func startUDPServer(conf *AgentConf) chan *MetricData {
+func startUDPServer(conf *AgentConf) *Samples {
     addr, _ := net.ResolveUDPAddr("udp", strings.Join([]string{conf.Address, strconv.Itoa(conf.Port)}, ":"))
     sock, err := net.ListenUDP("udp", addr)
 
@@ -31,9 +31,9 @@ func startUDPServer(conf *AgentConf) chan *MetricData {
     metricDataChannel := make(chan *MetricData)
 
     listenForMetrics(sock, metricDataChannel)
-    collectData(metricDataChannel)
+	database := collectData(metricDataChannel)
 
-    return metricDataChannel
+    return database
 }
 
 func listenForMetrics(sock *net.UDPConn, metricDataChannel chan *MetricData) {

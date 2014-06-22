@@ -25,11 +25,6 @@ type Samples struct {
     metrics map[string]*MetricData
 }
 
-var Database = new(Samples)
-func init() {
-    Database.metrics = make(map[string]*MetricData)
-}
-
 func (h *MetricData)Key() string {
     return h.Namespace + ":" + h.Metric
 }
@@ -90,7 +85,11 @@ func (h *Samples)addPoint(data *MetricData) {
     }
 }
 
-func collectData(metricPipe chan *MetricData) {
+func collectData(metricPipe chan *MetricData) *Samples {
+
+	database := new(Samples)
+	database.metrics = make(map[string]*MetricData)
+
     W.Add(1)
     go func() {
         for {
@@ -100,14 +99,16 @@ func collectData(metricPipe chan *MetricData) {
                 break
             }
 
-            Database.Lock()
-            Database.addPoint(data)
-            Database.Unlock()
+            database.Lock()
+            database.addPoint(data)
+            database.Unlock()
         }
 
         L.Info("I close the metric data collection daemon")
         W.Done()
     }()
+
+	return database
 }
 
 
