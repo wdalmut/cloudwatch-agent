@@ -29,7 +29,7 @@ zcat %{_sourcedir}/%{name}.tar.gz | tar -xvf -
 %build
 mv %{name}-%{version}/* %{name}/
 cd %{name}
-go build -a
+make
 
 %install
 mkdir -p %{buildroot}%{_sbindir}

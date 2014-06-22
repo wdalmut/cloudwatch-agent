@@ -17,6 +17,10 @@ type AgentConf struct {
 	Loop    int
 }
 
+var (
+	VERSION string
+)
+
 // Prepare a new agent configuration
 //
 // The default parameters are
