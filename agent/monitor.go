@@ -2,14 +2,14 @@ package agent
 
 import (
     "sync"
-	"strings"
+    "strings"
 )
 
 const (
-	OP_AVG = "avg"
-	OP_SUM = "sum"
-	OP_MAX = "max"
-	OP_MIN = "min"
+    OP_AVG = "avg"
+    OP_SUM = "sum"
+    OP_MAX = "max"
+    OP_MIN = "min"
 )
 
 type MetricData struct {
@@ -17,7 +17,7 @@ type MetricData struct {
     Metric string
     Unit string
     Value float64
-	Op string
+    Op string
 }
 
 type Samples struct {
@@ -31,34 +31,34 @@ func init() {
 }
 
 func (h *MetricData)Key() string {
-	return h.Namespace + ":" + h.Metric
+    return h.Namespace + ":" + h.Metric
 }
 
 func (h *MetricData)Update(point *MetricData) {
-	switch h.Op {
-	default:
-		h.avg(point)
-	case OP_AVG:
-		h.avg(point)
-	case OP_MAX:
-		h.max(point)
-	case OP_MIN:
-		h.min(point)
-	case OP_SUM:
-		h.sum(point)
-	}
+    switch h.Op {
+    default:
+        h.avg(point)
+    case OP_AVG:
+        h.avg(point)
+    case OP_MAX:
+        h.max(point)
+    case OP_MIN:
+        h.min(point)
+    case OP_SUM:
+        h.sum(point)
+    }
 }
 
 func (h *MetricData)max(point *MetricData) {
-	if point.Value > h.Value {
-		h.Value = point.Value
-	}
+    if point.Value > h.Value {
+        h.Value = point.Value
+    }
 }
 
 func (h *MetricData)min(point *MetricData) {
-	if point.Value < h.Value {
-		h.Value = point.Value
-	}
+    if point.Value < h.Value {
+        h.Value = point.Value
+    }
 }
 
 func (h *MetricData)sum(point *MetricData) {
@@ -82,7 +82,7 @@ func (h *Samples)addPoint(data *MetricData) {
         actualPoint.Value = data.Value
         actualPoint.Unit = data.Unit
 
-		actualPoint.Op = strings.ToLower(data.Op)
+        actualPoint.Op = strings.ToLower(data.Op)
 
         h.metrics[data.Key()] = actualPoint
     } else {
@@ -90,22 +90,24 @@ func (h *Samples)addPoint(data *MetricData) {
     }
 }
 
-func CollectData(metricPipe chan *MetricData) {
-    for {
-        data, ok := <-metricPipe
-        if !ok {
-            L.Info("The metric data pipeline is closed!")
-            break
+func collectData(metricPipe chan *MetricData) {
+    W.Add(1)
+    go func() {
+        for {
+            data, ok := <-metricPipe
+            if !ok {
+                L.Info("The metric data pipeline is closed!")
+                break
+            }
+
+            Database.Lock()
+            Database.addPoint(data)
+            Database.Unlock()
         }
 
-
-        Database.Lock()
-        Database.addPoint(data)
-        Database.Unlock()
-    }
-
-    L.Info("I close the metric data collection daemon")
-    W.Done()
+        L.Info("I close the metric data collection daemon")
+        W.Done()
+    }()
 }
 
 
