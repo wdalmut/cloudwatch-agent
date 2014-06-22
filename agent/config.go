@@ -1,22 +1,30 @@
 package agent
 
-import(
+import (
 	"encoding/json"
+	"fmt"
+	"io"
 	"io/ioutil"
 	"os"
-	"io"
 )
 
 type AgentConf struct {
-	Key string
-	Secret string
-	Region string
+	Key     string
+	Secret  string
+	Region  string
 	Address string
-	Port int
-	Loop int
+	Port    int
+	Loop    int
 }
 
-func NewConf() (*AgentConf){
+// Prepare a new agent configuration
+//
+// The default parameters are
+//  * REGION: eu-west-1
+// 	* ADDRESS: 127.0.0.1
+//  * PORT: 1234
+//  * LOOP: 60
+func NewConf() *AgentConf {
 	daemonConf := new(AgentConf)
 	daemonConf.Key = os.Getenv("AWS_ACCESS_KEY_ID")
 
@@ -33,7 +41,24 @@ func NewConf() (*AgentConf){
 	return daemonConf
 }
 
-func (d *AgentConf)MergeWithFile(src io.Reader) (error) {
+// Merge default configuration with a JSON configuration
+func (d *AgentConf) MergeWithFileAtPath(path string) error {
+	src, err := os.Open(path)
+	if err == nil {
+		L.Info(fmt.Sprintf("Merge default configuration with file at path: %s", path))
+		err = d.MergeWithReader(src)
+		if err != nil {
+			L.Warning(fmt.Sprintf("Unable to merge file %s, wrong JSON format probably", path))
+		}
+	} else {
+		L.Warning(fmt.Sprintf("Missing file at path %s", path))
+	}
+
+	return err
+}
+
+// Merge default configuration with a JSON configuration
+func (d *AgentConf) MergeWithReader(src io.Reader) error {
 	file, err := ioutil.ReadAll(src)
 	if err != nil {
 		return err
@@ -43,4 +68,3 @@ func (d *AgentConf)MergeWithFile(src io.Reader) (error) {
 
 	return err
 }
-

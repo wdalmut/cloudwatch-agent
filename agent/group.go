@@ -1,8 +1,7 @@
 package agent
 
 import (
-    "sync"
+	"sync"
 )
 
 var W sync.WaitGroup
-
