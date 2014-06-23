@@ -92,13 +92,7 @@ func collectData(metricPipe chan *MetricData) *Samples {
 
 	W.Add(1)
 	go func() {
-		for {
-			data, ok := <-metricPipe
-			if !ok {
-				L.Info("The metric data pipeline is closed!")
-				break
-			}
-
+		for data := range metricPipe {
 			database.Lock()
 			database.addPoint(data)
 			database.Unlock()
