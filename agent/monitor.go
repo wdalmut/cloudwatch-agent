@@ -3,6 +3,8 @@ package agent
 import (
 	"strings"
 	"sync"
+
+	"github.com/crowdmob/goamz/cloudwatch"
 )
 
 const (
@@ -65,6 +67,16 @@ func (h *MetricData) avg(point *MetricData) {
 	h.Value /= 2
 }
 
+func (h *MetricData) Datum() cloudwatch.MetricDatum {
+	metric := cloudwatch.MetricDatum{}
+
+	metric.MetricName = h.Metric
+	metric.Unit = h.Unit
+	metric.Value = h.Value
+
+	return metric
+}
+
 func (h *Samples) addPoint(data *MetricData) {
 	actualPoint := h.metrics[data.Key()]
 
@@ -92,13 +104,7 @@ func collectData(metricPipe chan *MetricData) *Samples {
 
 	W.Add(1)
 	go func() {
-		for {
-			data, ok := <-metricPipe
-			if !ok {
-				L.Info("The metric data pipeline is closed!")
-				break
-			}
-
+		for data := range metricPipe {
 			database.Lock()
 			database.addPoint(data)
 			database.Unlock()

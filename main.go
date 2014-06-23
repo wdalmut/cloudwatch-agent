@@ -7,15 +7,11 @@ import (
 	"github.com/wdalmut/cloudwatch-agent/agent"
 )
 
-const (
-	VERSION = "0.0.10"
-)
-
 func main() {
 	app := cli.NewApp()
 	app.Name = "cloudwatch-agent"
 	app.Usage = "Monitor your application via UDP/IP messages"
-	app.Version = VERSION
+	app.Version = agent.VERSION
 	app.Commands = []cli.Command{
 		{
 			Name:  "capture",
