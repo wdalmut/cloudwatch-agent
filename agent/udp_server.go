@@ -9,14 +9,13 @@ import (
 	"strings"
 )
 
-func Capture(conf *AgentConf) {
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt, os.Kill)
+var closeAll chan struct{}
 
-	waitingForKillSignal(c, conf)
+func Capture(conf *AgentConf) {
+	closeAll = make(chan struct{})
+
 	database := startUDPServer(conf)
 	sendCollectedData(conf, database)
-
 	L.Info("CloudWatch agent started...")
 }
 
@@ -35,6 +34,10 @@ func startUDPServer(conf *AgentConf) *Samples {
 	listenForMetrics(sock, metricDataChannel)
 	database := collectData(metricDataChannel)
 
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt, os.Kill)
+	waitingForKillSignal(c, sock)
+
 	return database
 }
 
@@ -43,44 +46,40 @@ func listenForMetrics(sock *net.UDPConn, metricDataChannel chan *MetricData) {
 	go func() {
 		for {
 			bytes := make([]byte, 1024)
-			dataLen, _ := sock.Read(bytes)
-
-			monitorData := new(MetricData)
-			err := json.Unmarshal(bytes[:dataLen], monitorData)
-
-			if err != nil {
-				closeProcedure := string(bytes[:dataLen])
-				if strings.Trim(closeProcedure, "!\n") == "close" {
-					L.Info("Shutdown command received! Close data channel communication pipeline immediately!")
-					close(metricDataChannel)
-					close(stopTicker)
-					break
+			if dataLen, err := sock.Read(bytes); err == nil {
+				monitorData := new(MetricData)
+				if err := json.Unmarshal(bytes[:dataLen], monitorData); err == nil {
+					metricDataChannel <- monitorData
+				} else {
+					L.Err("Unable to unpack monitor information")
 				}
-
-				L.Err("Unable to unpack monitor information")
 			} else {
-				metricDataChannel <- monitorData
+				break
 			}
 		}
 
 		L.Info("I close the UDP monitor daemon")
-		sock.Close()
+		close(metricDataChannel)
+
 		W.Done()
 	}()
 }
 
-func waitingForKillSignal(c chan os.Signal, conf *AgentConf) {
+func waitingForKillSignal(c chan os.Signal, sock *net.UDPConn) {
 	W.Add(1)
 	go func() {
 		_ = <-c
-
 		L.Info("Kill signal received!")
+		L.Info("Closing UDP/IP socket")
+		sock.Close()
 
-		addr, _ := net.ResolveUDPAddr("udp", strings.Join([]string{conf.Address, strconv.Itoa(conf.Port)}, ":"))
-		client, _ := net.DialUDP("udp", nil, addr)
-		client.Write([]byte("close!\n"))
+		L.Info("Closing sender data channel")
+		close(closeAll)
+
+		L.Info("Closing signal listener data channel")
 		close(c)
 
+		L.Info("All signals sent correctly")
 		W.Done()
 	}()
 }

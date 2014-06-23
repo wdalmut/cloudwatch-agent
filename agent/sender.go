@@ -8,8 +8,6 @@ import (
 	"github.com/crowdmob/goamz/cloudwatch"
 )
 
-var stopTicker chan struct{}
-
 func initCloudWatchAgent(conf *AgentConf) *cloudwatch.CloudWatch {
 	auth, err := aws.GetAuth(conf.Key, conf.Secret, "", time.Time{})
 	if err != nil {
@@ -30,7 +28,6 @@ func initCloudWatchAgent(conf *AgentConf) *cloudwatch.CloudWatch {
 func sendCollectedData(conf *AgentConf, database *Samples) {
 	cw := initCloudWatchAgent(conf)
 
-	stopTicker = make(chan struct{})
 	doEvery(time.Duration(conf.Loop)*time.Second, func(time time.Time) {
 		database.Lock()
 		for key, point := range database.metrics {
@@ -64,7 +61,7 @@ func doEvery(every time.Duration, f func(time.Time)) {
 			select {
 			case <-ticker.C:
 				f(time.Now())
-			case <-stopTicker:
+			case <-closeAll:
 				ticker.Stop()
 
 				L.Info("Received stop scheduler, force send operation to CloudWatch")

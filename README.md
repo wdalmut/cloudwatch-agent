@@ -69,5 +69,5 @@ Valid unit:
 
 ## Close the agent
 
-You can kill it or send via UDP the message `close!`
+Just kill the agent with signals: interrupt or kill (`sigint` or `sigkill`)
 
