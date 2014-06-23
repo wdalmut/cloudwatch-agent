@@ -3,6 +3,8 @@ package agent
 import (
 	"strings"
 	"sync"
+
+	"github.com/crowdmob/goamz/cloudwatch"
 )
 
 const (
@@ -63,6 +65,16 @@ func (h *MetricData) sum(point *MetricData) {
 func (h *MetricData) avg(point *MetricData) {
 	h.Value += point.Value
 	h.Value /= 2
+}
+
+func (h *MetricData) Datum() cloudwatch.MetricDatum {
+	metric := cloudwatch.MetricDatum{}
+
+	metric.MetricName = h.Metric
+	metric.Unit = h.Unit
+	metric.Value = h.Value
+
+	return metric
 }
 
 func (h *Samples) addPoint(data *MetricData) {
