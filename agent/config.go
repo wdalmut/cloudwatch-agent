@@ -25,7 +25,7 @@ var (
 //
 // The default parameters are
 //  * REGION: eu-west-1
-// 	* ADDRESS: 127.0.0.1
+//  * ADDRESS: 127.0.0.1
 //  * PORT: 1234
 //  * LOOP: 60
 func NewConf() *AgentConf {
