@@ -11,6 +11,10 @@ import (
 
 var closeAll chan struct{}
 
+// Start the data capture
+//
+// The agent will listen for incoming messages on port
+// 1234 (by default) via UDP/IP socket
 func Capture(conf *AgentConf) {
 	closeAll = make(chan struct{})
 
@@ -19,6 +23,11 @@ func Capture(conf *AgentConf) {
 	L.Info("CloudWatch agent started...")
 }
 
+// Start the UDP/IP server and prepare the empty databaes
+//
+// Just open a new UDP/IP socket server and return a new
+// empty database (map key->value) in order to collect
+// and compute statistics on incoming data
 func startUDPServer(conf *AgentConf) *Samples {
 	addr, _ := net.ResolveUDPAddr("udp", strings.Join([]string{conf.Address, strconv.Itoa(conf.Port)}, ":"))
 	sock, err := net.ListenUDP("udp", addr)
@@ -41,6 +50,10 @@ func startUDPServer(conf *AgentConf) *Samples {
 	return database
 }
 
+// Stay up in order to collect incoming metrics
+//
+// Collect information and send them via metricDataChannel
+// when a new valid packet is received via the opened socket
 func listenForMetrics(sock *net.UDPConn, metricDataChannel chan *MetricData) {
 	W.Add(1)
 	go func() {
@@ -65,6 +78,10 @@ func listenForMetrics(sock *net.UDPConn, metricDataChannel chan *MetricData) {
 	}()
 }
 
+// Close the appllication on sigint or sigkill
+//
+// In case of interrupt or kill signal close the application
+// closing all the opened sockets and channels
 func waitingForKillSignal(c chan os.Signal, sock *net.UDPConn) {
 	W.Add(1)
 	go func() {

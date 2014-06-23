@@ -8,6 +8,10 @@ import (
 	"github.com/crowdmob/goamz/cloudwatch"
 )
 
+// Init the CloudWatch client
+//
+// The configuration is used in order to prepare the client with
+// key, secret and region.
 func initCloudWatchAgent(conf *AgentConf) *cloudwatch.CloudWatch {
 	auth, err := aws.GetAuth(conf.Key, conf.Secret, "", time.Time{})
 	if err != nil {
@@ -25,6 +29,10 @@ func initCloudWatchAgent(conf *AgentConf) *cloudwatch.CloudWatch {
 	return cw
 }
 
+// Send collected data to CloudWatch
+//
+// Uses doEvery method in order to send collected data to
+// AWS Cloudwatch
 func sendCollectedData(conf *AgentConf, database *Samples) {
 	cw := initCloudWatchAgent(conf)
 
@@ -52,6 +60,11 @@ func sendCollectedData(conf *AgentConf, database *Samples) {
 	})
 }
 
+// Execute the anonymous function every given amount of time
+//
+// The anon func is executed tipically every 60 seconds and
+// the timer is closed when a message appears on closeAll
+// channel (just close it)
 func doEvery(every time.Duration, f func(time.Time)) {
 	ticker := time.NewTicker(every)
 
