@@ -70,16 +70,14 @@ func waitingForKillSignal(c chan os.Signal, sock *net.UDPConn) {
 	go func() {
 		_ = <-c
 		L.Info("Kill signal received!")
+		close(c)
+
 		L.Info("Closing UDP/IP socket")
 		sock.Close()
 
 		L.Info("Closing sender data channel")
 		close(closeAll)
 
-		L.Info("Closing signal listener data channel")
-		close(c)
-
-		L.Info("All signals sent correctly")
 		W.Done()
 	}()
 }
