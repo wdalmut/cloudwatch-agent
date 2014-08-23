@@ -31,9 +31,86 @@
         <p>CloudWatch Agent is a long running process that collects your application information and sent them to CloudWatch every minute. The goal of this monitor is to reduce the time overhead introduced by CloudWatch SDK and also all write operation to the service.</p>
 
 <p>Thanks to the agent you can collect a wide range of metrics like: exceptions, timing about your application using a single monitor tool in your AWS space: CloudWatch.</p>
+
+<h2>
+<a name="getting-started" class="anchor" href="#getting-started"><span class="octicon octicon-link"></span></a>Getting Started</h2>
+
+<p>The agent works using UDP/IP packages on <code>127.0.0.1</code>, we just have to send simple JSON package to the monitor on port <code>1234</code></p>
+
+<pre><code>{"namespace": "wdm", "metric": "indexer-timing", "value": 81.21}
+</code></pre>
+
+<p>Before use the service remember to configure the AWS ApiKey and SecretKey in the daemon configuration file at <code>/etc/default/cloudwatch-agent</code> you can also tweak monitor option tuning the configuration file at: <code>/etc/cloudwatch-agent/cloudwatch-agent.conf</code></p>
+
+<p>You can try the daemon using <code>nc</code> tool:</p>
+
+<p>echo '{"namespace": "wdm", "metric": "indexer-timing", "value": 81.21}' | nc -u localhost 1234</p>
+
+<h2>
+<a name="install-the-agent" class="anchor" href="#install-the-agent"><span class="octicon octicon-link"></span></a>Install the agent</h2>
+
+<h3>
+<a name="debian-family" class="anchor" href="#debian-family"><span class="octicon octicon-link"></span></a>Debian Family</h3>
+
+<p>If you use a Debian like distribution you can use the precompiled package</p>
+
+<pre><code>echo "deb http://dl.bintray.com/wdalmut/deb /" | sudo tee /etc/apt/sources.list.d/wdalmut.list
+echo "#deb-src http://dl.bintray.com/wdalmut/deb /" | sudo tee -a /etc/apt/sources.list.d/wdalmut.list
+</code></pre>
+
+<p>Now just update your repository</p>
+
+<pre><code>sudo apt-get update
+</code></pre>
+
+<p>And install the monitor</p>
+
+<pre><code>sudo apt-get install cloudwatch-agent
+</code></pre>
+
+<h3>
+<a name="rhel-family" class="anchor" href="#rhel-family"><span class="octicon octicon-link"></span></a>RHEL family</h3>
+
+<p>If you use a RedHat based distribution add the RPM repository</p>
+
+<pre><code>wget https://bintray.com/wdalmut/rpm/rpm -O bintray-wdalmut-rpm.repo
+sudo mv bintray-wdalmut-rpm.repo /etc/yum.repos.d/
+</code></pre>
+
+<p>now just install it</p>
+
+<pre><code>sudo yum install cloudwatch-agent.x86_64
+</code></pre>
+
+<h2>
+<a name="start-the-agent" class="anchor" href="#start-the-agent"><span class="octicon octicon-link"></span></a>Start the agent</h2>
+
+<p>After the installation process and the configuration you can start the agent using the common service interface.</p>
+
+<pre><code>sudo service cw-agent start
+</code></pre>
+
+<p>Allowed operations are:</p>
+
+<ul>
+<li>start</li>
+<li>stop</li>
+<li>status</li>
+<li>restart</li>
+</ul>
       </section>
     </div>
 
-    
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-54115109-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
   </body>
 </html>
