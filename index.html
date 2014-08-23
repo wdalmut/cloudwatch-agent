@@ -166,6 +166,30 @@ sudo mv bintray-wdalmut-rpm.repo /etc/yum.repos.d/
 </code></pre>
 
 <p>For each exception we can collect the total number in a minute and send the total amount to CloudWatch every minute.</p>
+
+<h2>
+<a name="sdks" class="anchor" href="#sdks"><span class="octicon octicon-link"></span></a>SDKs</h2>
+
+<p>You can use pre-packaged agent sdk for your application</p>
+
+<h3>
+<a name="php-sdk" class="anchor" href="#php-sdk"><span class="octicon octicon-link"></span></a>PHP SDK</h3>
+
+<p>In order to get the PHP SDK you have to add the agent dependency to your <code>composer.json</code> </p>
+
+<pre><code>php composer.phar require corley/cloudwatch-agent-client:*
+</code></pre>
+
+<p>Now you can use directly in your application:</p>
+
+<div class="highlight highlight-php"><pre><span class="nx">Corley\CloudWatch\Agent</span><span class="o">::</span><span class="na">point</span><span class="p">(</span><span class="nv">$namespace</span><span class="p">,</span> <span class="nv">$metric</span><span class="p">,</span> <span class="nv">$value</span><span class="p">);</span>
+</pre></div>
+
+<p>Also with unit and the operation type:</p>
+
+<div class="highlight highlight-php"><pre><span class="nx">Agent</span><span class="o">::</span><span class="na">point</span><span class="p">(</span><span class="nv">$namespace</span><span class="p">,</span> <span class="nv">$metric</span><span class="p">,</span> <span class="nv">$value</span><span class="p">,</span> <span class="p">[</span><span class="s2">"unit"</span> <span class="o">=&gt;</span> <span class="nx">Agent</span><span class="o">::</span><span class="na">UNIT_MILLISECONDS</span><span class="p">]);</span>
+<span class="nx">Agent</span><span class="o">::</span><span class="na">point</span><span class="p">(</span><span class="nv">$namespace</span><span class="p">,</span> <span class="nv">$metric</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="s2">"op"</span> <span class="o">=&gt;</span> <span class="nx">Agent</span><span class="o">::</span><span class="na">OP_SUM</span><span class="p">]);</span>
+</pre></div>
       </section>
     </div>
 
