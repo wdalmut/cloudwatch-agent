@@ -157,12 +157,13 @@ sudo mv bintray-wdalmut-rpm.repo /etc/yum.repos.d/
 
 <p>Just as example you can count the number of exception in your application just sending a simple packet for each exception catched</p>
 
-<p>{
+<pre><code>{
     "namespace": "app"
     "metric": "errors"
     "value": 1
     "op": "sum"
-}</p>
+}
+</code></pre>
 
 <p>For each exception we can collect the total number in a minute and send the total amount to CloudWatch every minute.</p>
       </section>
