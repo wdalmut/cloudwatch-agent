@@ -1,33 +1,32 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
-
     <title>Cloudwatch Agent by wdalmut</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
   </head>
-
   <body>
-
-    <header>
-      <div class="container">
+    <div class="wrapper">
+      <header>
         <h1>Cloudwatch Agent</h1>
-        <h2>Cloudwatch Agent - UDP/IP long running process for AWS CloudWatch</h2>
-
-        <section id="downloads">
-          <a href="https://github.com/wdalmut/cloudwatch-agent/zipball/master" class="btn">Download as .zip</a>
-          <a href="https://github.com/wdalmut/cloudwatch-agent/tarball/master" class="btn">Download as .tar.gz</a>
-          <a href="https://github.com/wdalmut/cloudwatch-agent" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
-        </section>
-      </div>
-    </header>
-
-    <div class="container">
-      <section id="main_content">
+        <p>Cloudwatch Agent - UDP/IP long running process for AWS CloudWatch</p>
+        <p class="view"><a href="https://github.com/wdalmut/cloudwatch-agent">View the Project on GitHub <small>wdalmut/cloudwatch-agent</small></a></p>
+        <ul>
+          <li><a href="https://github.com/wdalmut/cloudwatch-agent/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/wdalmut/cloudwatch-agent/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/wdalmut/cloudwatch-agent">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
         <p>CloudWatch Agent is a long running process that collects your application information and sent them to CloudWatch every minute. The goal of this monitor is to reduce the time overhead introduced by CloudWatch SDK and also all write operation to the service.</p>
 
 <p>Thanks to the agent you can collect a wide range of metrics like: exceptions, timing about your application using a single monitor tool in your AWS space: CloudWatch.</p>
@@ -44,9 +43,64 @@
 
 <p>You can try the daemon using <code>nc</code> tool:</p>
 
-<p>echo '{"namespace": "wdm", "metric": "indexer-timing", "value": 81.21}' | nc -u localhost 1234</p>
+<pre><code>echo '{"namespace": "wdm", "metric": "indexer-timing", "value": 81.21}' | nc -u localhost 1234
+</code></pre>
 
 <h2>
+<a name="advanced-usage" class="anchor" href="#advanced-usage"><span class="octicon octicon-link"></span></a>Advanced usage</h2>
+
+<p>The complete data packet structure is quite bit more complex:</p>
+
+<pre><code>{
+    "namespace": ...
+    "metric": ...
+    "unit": ...
+    "value": ...
+    "op": ...
+}
+</code></pre>
+
+<p>Where you can tune also the operation type and the metric unit. Valid operations are:</p>
+
+<ul>
+<li>
+<code>avg</code> - Compute the average of all packages</li>
+<li>
+<code>sum</code> - Sum all incoming samples</li>
+<li>
+<code>max</code> - Send only the max point</li>
+<li>
+<code>min</code> - Send only the min point</li>
+</ul><p>Valid units are:</p>
+
+<ul>
+<li><code>Seconds</code></li>
+<li><code>Microseconds</code></li>
+<li><code>Milliseconds</code></li>
+<li><code>Bytes</code></li>
+<li><code>Kilobytes</code></li>
+<li><code>Megabytes</code></li>
+<li><code>Gigabytes</code></li>
+<li><code>Terabytes</code></li>
+<li><code>Bits</code></li>
+<li><code>Kilobits</code></li>
+<li><code>Megabits</code></li>
+<li><code>Gigabits</code></li>
+<li><code>Terabits</code></li>
+<li><code>Percent</code></li>
+<li><code>Count</code></li>
+<li><code>Bytes/Second</code></li>
+<li><code>Kilobytes/Second</code></li>
+<li><code>Megabytes/Second</code></li>
+<li><code>Gigabytes/Second</code></li>
+<li><code>Terabytes/Second</code></li>
+<li><code>Bits/Second</code></li>
+<li><code>Kilobits/Second</code></li>
+<li><code>Megabits/Second</code></li>
+<li><code>Gigabits/Second</code></li>
+<li><code>Terabits/Second</code></li>
+<li><code>Count/Second</code></li>
+</ul><h2>
 <a name="install-the-agent" class="anchor" href="#install-the-agent"><span class="octicon octicon-link"></span></a>Install the agent</h2>
 
 <h3>
@@ -97,10 +151,26 @@ sudo mv bintray-wdalmut-rpm.repo /etc/yum.repos.d/
 <li>stop</li>
 <li>status</li>
 <li>restart</li>
-</ul>
+</ul><h2>
+<a name="examples-of-usage" class="anchor" href="#examples-of-usage"><span class="octicon octicon-link"></span></a>Examples of usage</h2>
+
+<p>Just as example you can count the number of exception in your application just sending a simple packet for each exception catched</p>
+
+<p>{
+    "namespace": "app"
+    "metric": "errors"
+    "value": 1
+    "op": "sum"
+}</p>
+
+<p>For each exception we can collect the total number in a minute and send the total amount to CloudWatch every minute.</p>
       </section>
     </div>
-
+    <footer>
+      <p>Project maintained by <a href="https://github.com/wdalmut">wdalmut</a></p>
+      <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
+    </footer>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
               <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
