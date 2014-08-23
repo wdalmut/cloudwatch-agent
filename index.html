@@ -1,33 +1,36 @@
 <!DOCTYPE html>
 <html>
+
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Cloudwatch Agent : Cloudwatch Agent - UDP/IP long running process for AWS CloudWatch">
 
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-    <title>Cloudwatch Agent by wdalmut</title>
+    <title>Cloudwatch Agent</title>
   </head>
 
   <body>
 
-    <header>
-      <div class="container">
-        <h1>Cloudwatch Agent</h1>
-        <h2>Cloudwatch Agent - UDP/IP long running process for AWS CloudWatch</h2>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/wdalmut/cloudwatch-agent">View on GitHub</a>
 
-        <section id="downloads">
-          <a href="https://github.com/wdalmut/cloudwatch-agent/zipball/master" class="btn">Download as .zip</a>
-          <a href="https://github.com/wdalmut/cloudwatch-agent/tarball/master" class="btn">Download as .tar.gz</a>
-          <a href="https://github.com/wdalmut/cloudwatch-agent" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
-        </section>
-      </div>
-    </header>
+          <h1 id="project_title">Cloudwatch Agent</h1>
+          <h2 id="project_tagline">Cloudwatch Agent - UDP/IP long running process for AWS CloudWatch</h2>
 
-    <div class="container">
-      <section id="main_content">
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/wdalmut/cloudwatch-agent/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/wdalmut/cloudwatch-agent/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
         <p>CloudWatch Agent is a long running process that collects your application information and sent them to CloudWatch every minute. The goal of this monitor is to reduce the time overhead introduced by CloudWatch SDK and also all write operation to the service.</p>
 
 <p>Thanks to the agent you can collect a wide range of metrics like: exceptions, timing about your application using a single monitor tool in your AWS space: CloudWatch.</p>
@@ -193,6 +196,14 @@ sudo mv bintray-wdalmut-rpm.repo /etc/yum.repos.d/
       </section>
     </div>
 
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Cloudwatch Agent maintained by <a href="https://github.com/wdalmut">wdalmut</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
               <script type="text/javascript">
             var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
             document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
@@ -203,6 +214,7 @@ sudo mv bintray-wdalmut-rpm.repo /etc/yum.repos.d/
             pageTracker._trackPageview();
             } catch(err) {}
           </script>
+
 
   </body>
 </html>
