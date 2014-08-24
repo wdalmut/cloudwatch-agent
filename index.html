@@ -193,6 +193,33 @@ sudo mv bintray-wdalmut-rpm.repo /etc/yum.repos.d/
 <div class="highlight highlight-php"><pre><span class="nx">Agent</span><span class="o">::</span><span class="na">point</span><span class="p">(</span><span class="nv">$namespace</span><span class="p">,</span> <span class="nv">$metric</span><span class="p">,</span> <span class="nv">$value</span><span class="p">,</span> <span class="p">[</span><span class="s2">"unit"</span> <span class="o">=&gt;</span> <span class="nx">Agent</span><span class="o">::</span><span class="na">UNIT_MILLISECONDS</span><span class="p">]);</span>
 <span class="nx">Agent</span><span class="o">::</span><span class="na">point</span><span class="p">(</span><span class="nv">$namespace</span><span class="p">,</span> <span class="nv">$metric</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">[</span><span class="s2">"op"</span> <span class="o">=&gt;</span> <span class="nx">Agent</span><span class="o">::</span><span class="na">OP_SUM</span><span class="p">]);</span>
 </pre></div>
+
+<h2>
+<a name="integrate-with-elasticbeanstalk" class="anchor" href="#integrate-with-elasticbeanstalk"><span class="octicon octicon-link"></span></a>Integrate with ElasticBeanStalk</h2>
+
+<p>If you are running your application into and ElasticBeanStalk container you can host the <code>rpm</code> package by yourself on S3 and just add a configuration step in your <code>.ebextensions</code> folder</p>
+
+<pre><code># .ebextensions/05_monitor.config
+packages:
+    rpm:
+        monitor: https://s3-eu-west-1.amazonaws.com/your-bucket-name/cloudwatch-agent-0.0.11-1.x86_64.rpm
+container_commands:
+    05_put_aws_key:
+        command: echo "export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" &gt; /etc/default/cloudwatch-agent &amp;&amp; echo "export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_KEY" &gt;&gt; /etc/default/cloudwatch-agent
+    06_stop_monitor:
+        command: service cw-agent stop
+        ignoreErrors: true
+    07_start_monitor:
+        command: service cw-agent start
+        ignoreErrors: true
+services:
+    sysvinit:
+        cw-agent:
+            enabled: true
+            ensureRunning: true
+</code></pre>
+
+<p>Just remember to configure your <code>AWS_ACCESS_KEY_ID</code> and <code>AWS_SECRET_KEY</code> via the ElasticBeanStalk application environment configuration.</p>
       </section>
     </div>
 
